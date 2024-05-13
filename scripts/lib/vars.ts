@@ -21,19 +21,19 @@ export const testWallet = loadOrGenerateKeypair("testWallet");
 export const CLUSTER_URL = process.env.RPC_URL ?? clusterApiUrl("devnet");
 
 // create a new rpc connection
-export const connection = new Connection(CLUSTER_URL, "single");
+export const connection = new Connection(CLUSTER_URL, "confirmed");
 
 // define an address to also transfer lamports too
 export const STATIC_PUBLICKEY = new PublicKey("nickb1dAk4hKpHVPZenpzqVtw2F8RHnCq27QcfiReXD");
 
-export function TokenMint() {
+export function TokenMint(symble: string) {
   // load the stored PublicKeys for ease of use
   let localKeys = loadPublicKeysFromFile();
 
-  const tokenMint: PublicKey = localKeys.token;
+  const tokenMint: PublicKey = localKeys[symble];
 
   console.log(FgGreen + "==== Local PublicKeys loaded ====");
   console.log(`${FgGreen}Token's mint address: ${FgYellow + tokenMint}`);
-  console.log(FgYellow + explorerURL({ address: localKeys.token }));
+  console.log(FgYellow + explorerURL({ address: tokenMint.toString() }));
   return tokenMint;
 }

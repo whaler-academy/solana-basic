@@ -175,22 +175,6 @@ export function loadOrGenerateKeypair(fileName: string, dirName: string = DEFAUL
   }
 }
 
-export function UmiKeypair(umi: Umi, fileName: string, dirName: string = DEFAULT_KEY_DIR_NAME) {
-  try {
-    // compute the path to locate the file
-    const searchPath = path.join(dirName, `${fileName}.json`);
-    const secretKey = JSON.parse(fs.readFileSync(searchPath, "utf-8"));
-
-    // attempt to load the keypair from the file
-    const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(secretKey));
-
-    return keypair;
-  } catch (err) {
-    console.error("loadOrGenerateKeypair:", err);
-    throw err;
-  }
-}
-
 /*
   Compute the Solana explorer address for the various data
 */
