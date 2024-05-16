@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint } from "../../lib/vars";
+import { CLUSTER_URL, TokenMint, connection } from "../../lib/vars";
 import {
   createSignerFromKeypair,
   generateSigner,
@@ -9,9 +9,10 @@ import {
 } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
 import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { savePublicKeyToFile } from "../../lib/helpers";
+import { explorerURL, savePublicKeyToFile } from "../../lib/helpers";
 import { PublicKey } from "@solana/web3.js";
 import { NonFungible } from "../TokenStandard";
+import base58 from "bs58";
 
 (async () => {
   const umi = createUmi(CLUSTER_URL);
@@ -24,7 +25,7 @@ import { NonFungible } from "../TokenStandard";
   console.log("Collection NFT Mint address:", collectionNFTMint.publicKey);
   umi.use(mplTokenMetadata());
 
-  await createNft(umi, {
+  const { signature } = await createNft(umi, {
     mint: collectionNFTMint,
     name: NonFungible.name,
     symbol: NonFungible.symbol,
@@ -35,11 +36,9 @@ import { NonFungible } from "../TokenStandard";
       verified: false,
       key: collectionMint,
     },
-  })
-    .sendAndConfirm(umi)
-    .then(() => {
-      console.log("Mint Successfully.");
-    });
+  }).sendAndConfirm(umi);
+  
+  console.log("signature:", explorerURL({ txSignature: base58.encode(signature) }));
   // 保存Token账户地址
   savePublicKeyToFile("umi_collection_NFT", new PublicKey(collectionNFTMint.publicKey));
 })();

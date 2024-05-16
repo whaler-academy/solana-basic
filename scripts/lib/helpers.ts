@@ -9,7 +9,6 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
-import { Umi, generateSigner } from "@metaplex-foundation/umi";
 
 // define some default locations
 const DEFAULT_KEY_DIR_NAME = ".local_keys";
