@@ -3,7 +3,7 @@ import { CLUSTER_URL, FgGreen, FgYellow } from "../../lib/vars";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
-import { NonFungible } from "../TokenStandard";
+import { NonFungible } from "../1.TokenStandards/TokenStandard";
 
 // 上传metadata数据
 (async () => {

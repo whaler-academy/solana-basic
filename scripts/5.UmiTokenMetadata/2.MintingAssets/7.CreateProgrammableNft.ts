@@ -1,17 +1,16 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL } from "../../lib/vars";
+import { CLUSTER_URL, txExplorer } from "../../lib/vars";
 import {
   createSignerFromKeypair,
   generateSigner,
   percentAmount,
   signerIdentity,
-  some,
 } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
-import { createFungible } from "@metaplex-foundation/mpl-token-metadata";
+import { createProgrammableNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { savePublicKeyToFile } from "../../lib/helpers";
 import { PublicKey } from "@solana/web3.js";
-import { Fungible } from "../TokenStandard";
+import { ProgramableNonFungible } from "../1.TokenStandards/TokenStandard";
 
 (async () => {
   const umi = createUmi(CLUSTER_URL);
@@ -20,19 +19,18 @@ import { Fungible } from "../TokenStandard";
   // 计算Token Keypair
   let tokenMint = generateSigner(umi);
   console.log("Mint address:", tokenMint.publicKey);
+  umi.use(mplTokenMetadata());
 
-  await createFungible(umi, {
+  await createProgrammableNft(umi, {
     mint: tokenMint,
-    name: Fungible.name,
-    symbol: Fungible.symbol,
-    uri: "https://arweave.net/NoZ4gtzT_kYadwm7d3ArJyROdyuvn6r84KhpIYGHgPw",
+    name: ProgramableNonFungible.name,
+    uri: ProgramableNonFungible.external_url,
     sellerFeeBasisPoints: percentAmount(5.5),
-    decimals: some(9), // for 0 decimals use some(0)
   })
     .sendAndConfirm(umi)
-    .then(() => {
-      console.log("Successfully.");
+    .then(({ signature }) => {
+      txExplorer(signature);
     });
   // 保存Token账户地址
-  savePublicKeyToFile("umi_fungible_token", new PublicKey(tokenMint.publicKey));
+  savePublicKeyToFile("umi_ProgramableNonFungibl_token", new PublicKey(tokenMint.publicKey));
 })();

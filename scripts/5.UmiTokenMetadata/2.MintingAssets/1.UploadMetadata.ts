@@ -9,7 +9,7 @@ import {
 import { umiPayer } from "../../lib/umiHelper";
 import path from "path";
 import fs from "fs";
-import { Fungible } from "../TokenStandard";
+import { Fungible } from "../1.TokenStandards/TokenStandard";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 // 上传metadata数据

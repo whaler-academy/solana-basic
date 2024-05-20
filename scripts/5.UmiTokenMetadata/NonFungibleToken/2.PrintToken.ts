@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint } from "../../lib/vars";
+import { CLUSTER_URL, TokenMint, txExplorer } from "../../lib/vars";
 import {
   createSignerFromKeypair,
   generateSigner,
@@ -40,7 +40,7 @@ import {
     tokenStandard: TokenStandard.NonFungible,
   })
     .sendAndConfirm(umi)
-    .then(() => {
-      console.log("Successfully.");
+    .then(({ signature }) => {
+      txExplorer(signature);
     });
 })();

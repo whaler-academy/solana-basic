@@ -3,7 +3,7 @@ import { FgGreen, FgRed, FgYellow } from "../lib/vars";
 
 // 幸运账号
 const luckyStr = "Cui"; // 自定义前缀
-async function main() {
+(async () => {
   let count = 0;
   let retry = 0;
   // 循环直到找到50个幸运账号
@@ -23,8 +23,4 @@ async function main() {
       retry++;
     }
   }
-}
-main().catch(error => {
-  console.error(error);
-  process.exitCode = 1;
-});
+})();

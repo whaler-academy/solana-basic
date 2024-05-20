@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint, connection } from "../../lib/vars";
+import { CLUSTER_URL, TokenMint } from "../../lib/vars";
 import {
   createSignerFromKeypair,
   generateSigner,
@@ -11,7 +11,7 @@ import { umiPayer } from "../../lib/umiHelper";
 import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { explorerURL, savePublicKeyToFile } from "../../lib/helpers";
 import { PublicKey } from "@solana/web3.js";
-import { NonFungible } from "../TokenStandard";
+import { NonFungible } from "../1.TokenStandards/TokenStandard";
 import base58 from "bs58";
 
 (async () => {

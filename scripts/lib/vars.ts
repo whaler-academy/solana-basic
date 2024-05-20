@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import { PublicKey, Connection, clusterApiUrl } from "@solana/web3.js";
 import { explorerURL, loadOrGenerateKeypair, loadPublicKeysFromFile } from "./helpers";
+import { RpcConfirmTransactionResult } from "@metaplex-foundation/umi";
+import base58 from "bs58";
 
 // load the env variables from file
 dotenv.config();
@@ -36,4 +38,8 @@ export function TokenMint(symble: string) {
   console.log(`${FgGreen}Token's mint address: ${FgYellow + tokenMint}`);
   console.log(FgYellow + explorerURL({ address: tokenMint.toString() }));
   return tokenMint;
+}
+
+export function txExplorer(signature: Uint8Array) {
+  console.log(FgYellow + explorerURL({ txSignature: base58.encode(signature) }));
 }
