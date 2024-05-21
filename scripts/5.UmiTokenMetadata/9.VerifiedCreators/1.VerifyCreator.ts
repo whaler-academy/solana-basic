@@ -1,10 +1,11 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint } from "../../lib/vars";
+import { CLUSTER_URL, TokenMint, txExplorer } from "../../lib/vars";
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
 import {
-  fetchDigitalAssetWithAssociatedToken,
+  findMetadataPda,
   mplTokenMetadata,
+  verifyCreatorV1,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 (async () => {
@@ -12,9 +13,21 @@ import {
   const signer = createSignerFromKeypair(umi, umiPayer);
   umi.use(signerIdentity(signer, true));
   umi.use(mplTokenMetadata());
-  // 读取保存的Token地址
-  let mint = publicKey(TokenMint("umi_non_fungible_token"));
 
-  let ret = await fetchDigitalAssetWithAssociatedToken(umi, mint, signer.publicKey);
-  console.log(ret);
+  // 读取保存的Token地址
+  let collectionNFTMint = publicKey(TokenMint("umi_collection_NFT"));
+
+  const metadata = findMetadataPda(umi, {
+    mint: collectionNFTMint,
+  });
+  console.log("metadata:", metadata[0]);
+
+  await verifyCreatorV1(umi, {
+    metadata: metadata,
+    authority: signer,
+  })
+    .sendAndConfirm(umi)
+    .then(({ signature }) => {
+      txExplorer(signature);
+    });
 })();

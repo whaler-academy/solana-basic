@@ -1,7 +1,4 @@
-import {
-  NATIVE_MINT,
-  getAccount,
-} from "@solana/spl-token";
+import { NATIVE_MINT, getAccount } from "@solana/spl-token";
 import { LAMPORTS_PER_SOL, SystemProgram } from "@solana/web3.js";
 import { connection, payer, FgGreen, FgYellow } from "../lib/vars";
 import { Ata } from "../3.Token/ATA";

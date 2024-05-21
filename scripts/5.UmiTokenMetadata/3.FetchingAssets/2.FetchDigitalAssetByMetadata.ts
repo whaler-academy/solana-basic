@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint } from "../../lib/vars";
+import { CLUSTER_URL } from "../../lib/vars";
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
 import { fetchDigitalAssetByMetadata } from "@metaplex-foundation/mpl-token-metadata";

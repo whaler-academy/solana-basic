@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL } from "../../lib/vars";
+import { CLUSTER_URL, txExplorer } from "../../lib/vars";
 import {
   createSignerFromKeypair,
   generateSigner,
@@ -16,10 +16,12 @@ import { NonFungible } from "../1.TokenStandards/TokenStandard";
   const umi = createUmi(CLUSTER_URL);
   const signer = createSignerFromKeypair(umi, umiPayer);
   umi.use(signerIdentity(signer, true));
+  umi.use(mplTokenMetadata());
   // 计算Token Keypair
   let collectionMint = generateSigner(umi);
   console.log("Collection Mint address:", collectionMint.publicKey);
-  umi.use(mplTokenMetadata());
+  // 保存Token账户地址
+  savePublicKeyToFile("umi_collection", new PublicKey(collectionMint.publicKey));
 
   await createNft(umi, {
     mint: collectionMint,
@@ -34,6 +36,4 @@ import { NonFungible } from "../1.TokenStandards/TokenStandard";
     .then(({ signature }) => {
       txExplorer(signature);
     });
-  // 保存Token账户地址
-  savePublicKeyToFile("umi_collection", new PublicKey(collectionMint.publicKey));
 })();

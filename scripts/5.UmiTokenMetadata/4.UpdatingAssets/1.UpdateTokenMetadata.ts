@@ -17,7 +17,7 @@ import { publicKey } from "@metaplex-foundation/umi";
     mint: mint,
     data: { ...initialMetadata, name: "Updated Assets" },
     primarySaleHappened: true,
-    isMutable: true,
+    isMutable: false,
   })
     .sendAndConfirm(umi)
     .then(({ signature }) => {

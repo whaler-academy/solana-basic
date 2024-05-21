@@ -24,10 +24,12 @@ import { NonFungible } from "../1.TokenStandards/TokenStandard";
   await createNft(umi, {
     mint: tokenMint,
     name: NonFungible.name,
-    symbol:NonFungible.symbol,
+    symbol: NonFungible.symbol,
     uri: "https://arweave.net/_ShA_RoIEYEj0sVXaZ7t5FvJ-1WqeVt3DZxW1HsLngc",
     sellerFeeBasisPoints: percentAmount(5.5),
     printSupply: printSupply("Limited", [100]),
+    isMutable: true,
+    isCollection: true,
   })
     .sendAndConfirm(umi)
     .then(({ signature }) => {

@@ -1,36 +1,33 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { CLUSTER_URL, TokenMint } from "../../lib/vars";
+import { CLUSTER_URL, TokenMint, txExplorer } from "../../lib/vars";
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
 import { umiPayer } from "../../lib/umiHelper";
 import {
   findMetadataPda,
   mplTokenMetadata,
-  verifyCollectionV1,
+  unverifyCreatorV1,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 (async () => {
   const umi = createUmi(CLUSTER_URL);
   const signer = createSignerFromKeypair(umi, umiPayer);
   umi.use(signerIdentity(signer, true));
-  // 读取保存的Token地址
-  let collectionMint = publicKey(TokenMint("umi_collection"));
+  umi.use(mplTokenMetadata());
+
   // 读取保存的Token地址
   let collectionNFTMint = publicKey(TokenMint("umi_collection_NFT"));
 
-  umi.use(mplTokenMetadata());
-
-  const nftMetadata = findMetadataPda(umi, {
+  const metadata = findMetadataPda(umi, {
     mint: collectionNFTMint,
   });
-  console.log("nftMetadata:", nftMetadata);
+  console.log("metadata:", metadata[0]);
 
-  await verifyCollectionV1(umi, {
-    metadata: nftMetadata,
-    collectionMint: collectionMint,
+  await unverifyCreatorV1(umi, {
+    metadata: metadata,
     authority: signer,
   })
     .sendAndConfirm(umi)
-    .then(() => {
-      console.log("Verify Successfully.");
+    .then(({ signature }) => {
+      txExplorer(signature);
     });
 })();
