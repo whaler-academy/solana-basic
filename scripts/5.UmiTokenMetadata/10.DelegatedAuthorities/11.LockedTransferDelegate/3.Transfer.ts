@@ -1,10 +1,16 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { CLUSTER_URL, TokenMint, txExplorer } from "../../../lib/vars";
-import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
+import {
+  createSignerFromKeypair,
+  generateSigner,
+  publicKey,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
 import { UmiKeypair, umiPayer } from "../../../lib/umiHelper";
 import {
+  TokenStandard,
   mplTokenMetadata,
-  updateAsAuthorityItemDelegateV2,
+  transferV1,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 (async () => {
@@ -19,13 +25,16 @@ import {
   const delegate = createSignerFromKeypair(umi, delegateKeyPair);
 
   // 读取保存的Token地址
-  let mint = publicKey(TokenMint("umi_collection_NFT"));
+  let mint = publicKey(TokenMint("umi_ProgramableNonFungibl_token"));
+  let receiver = generateSigner(umi);
 
-  await updateAsAuthorityItemDelegateV2(umi, {
+  await transferV1(umi, {
     mint,
-    payer: signer,
     authority: delegate,
-    isMutable: false,
+    payer: signer,
+    tokenOwner: signer.publicKey,
+    destinationOwner: receiver.publicKey,
+    tokenStandard: TokenStandard.ProgrammableNonFungible,
   })
     .sendAndConfirm(umi)
     .then(({ signature }) => {
