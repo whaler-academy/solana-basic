@@ -1,10 +1,12 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { CLUSTER_URL, TokenMint, txExplorer } from "../../../lib/vars";
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
-import { UmiKeypair, umiPayer } from "../../../lib/umiHelper";
+import { loadOrGenerateKeypair } from "../../../lib/helpers";
+import { umiPayer } from "../../../lib/umiHelper";
 import {
+  TokenStandard,
+  delegateTransferV1,
   mplTokenMetadata,
-  updateAsAuthorityItemDelegateV2,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 (async () => {
@@ -12,20 +14,18 @@ import {
   const signer = createSignerFromKeypair(umi, umiPayer);
   umi.use(signerIdentity(signer, true));
   umi.use(mplTokenMetadata());
-
-  // 读取保存的Delegate
-  let delegateKeyPair = UmiKeypair("Delegate");
-  console.log("Delegate address:", delegateKeyPair.publicKey);
-  const delegate = createSignerFromKeypair(umi, delegateKeyPair);
-
   // 读取保存的Token地址
-  let mint = publicKey(TokenMint("umi_collection_NFT"));
+  let mint = publicKey(TokenMint("umi_ProgramableNonFungibl_token"));
+  // 计算Delegate
+  let delegate = loadOrGenerateKeypair("Delegate");
+  console.log("Delegate address:", delegate.publicKey.toBase58());
 
-  await updateAsAuthorityItemDelegateV2(umi, {
-    mint,
-    payer: signer,
-    authority: delegate,
-    isMutable: false,
+  await delegateTransferV1(umi, {
+    mint: mint,
+    tokenOwner: signer.publicKey,
+    authority: signer,
+    delegate: publicKey(delegate.publicKey),
+    tokenStandard: TokenStandard.ProgrammableNonFungible,
   })
     .sendAndConfirm(umi)
     .then(({ signature }) => {

@@ -1,13 +1,17 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { CLUSTER_URL, TokenMint, txExplorer } from "../../../lib/vars";
-import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi";
+import {
+  createSignerFromKeypair,
+  publicKey,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
+import { loadOrGenerateKeypair } from "../../../lib/helpers";
 import { umiPayer } from "../../../lib/umiHelper";
 import {
   TokenStandard,
+  delegateUtilityV1,
   mplTokenMetadata,
-  revokeProgrammableConfigItemV1,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { loadOrGenerateKeypair } from "../../../lib/helpers";
 
 (async () => {
   const umi = createUmi(CLUSTER_URL);
@@ -16,11 +20,13 @@ import { loadOrGenerateKeypair } from "../../../lib/helpers";
   umi.use(mplTokenMetadata());
   // 读取保存的Token地址
   let mint = publicKey(TokenMint("umi_ProgramableNonFungibl_token"));
-  // 读取保存的Delegate
+  // 计算Delegate
   let delegate = loadOrGenerateKeypair("Delegate");
+  console.log("Delegate address:", delegate.publicKey.toBase58());
 
-  await revokeProgrammableConfigItemV1(umi, {
-    mint,
+  await delegateUtilityV1(umi, {
+    mint: mint,
+    tokenOwner: signer.publicKey,
     authority: signer,
     delegate: publicKey(delegate.publicKey),
     tokenStandard: TokenStandard.ProgrammableNonFungible,
